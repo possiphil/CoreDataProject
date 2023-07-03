@@ -5,16 +5,21 @@
 //  Created by Philipp Sanktjohanser on 23.12.22.
 //
 
+import CoreData
 import SwiftUI
 
-struct FilteredList: View {
+struct FilteredList<T: NSManagedObject, Content: View>: View {
+    @FetchRequest var fetchRequest: FetchedResults<T>
+    let content: (T) -> Content
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List(fetchRequest, id: \.self) { item in
+            self.content(item)
+        }
     }
-}
-
-struct FilteredList_Previews: PreviewProvider {
-    static var previews: some View {
-        FilteredList()
+    
+    init(sortDescriptors: [SortDescriptor<T>], filterKey: String, predicate: String, filterValue: String, @ViewBuilder content: @escaping (T) -> Content) {
+        _fetchRequest = FetchRequest<T>(sortDescriptors: sortDescriptors, predicate: NSPredicate(format: "%K \(predicate) %@", filterKey, filterValue))
+        self.content = content
     }
 }

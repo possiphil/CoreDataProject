@@ -19,6 +19,13 @@ extension Singer {
     @NSManaged public var firstName: String?
     @NSManaged public var lastName: String?
 
+    var wrappedFirstName: String {
+        firstName ?? "Unknown"
+    }
+    
+    var wrappedLastName: String {
+        lastName ?? "Unknown"
+    }
 }
 
 extension Singer : Identifiable {
